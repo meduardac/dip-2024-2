@@ -16,9 +16,14 @@ def generate_image(seed, width, height, mean, std):
     Returns:
         image (numpy.ndarray): The generated image.
     """
-    ### START CODE HERE ###
-    ### TODO
-    ### END CODE HERE ###
+ # Define a semente aleatória para reprodutibilidade
+    np.random.seed(seed)
+    
+    # Gera os valores dos pixels usando distribuição normal
+    image = np.random.normal(mean, std, (height, width))
+    
+    # Normaliza os valores para o intervalo [0, 255]
+    image = np.clip(image, 0, 255).astype(np.uint8)
 
     return image
 
