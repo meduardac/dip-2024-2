@@ -1,35 +1,32 @@
+import argparse
 import numpy as np
+import cv2 as cv
+import urllib.request
 
-def get_image_info(image):
+def load_image_from_url(url, **kwargs):
     """
-    Extracts metadata and statistical information from an image.
-
+    Loads an image from an Internet URL with optional arguments for OpenCV's cv.imdecode.
+    
     Parameters:
-    - image (numpy.ndarray): Input image.
-
+    - url (str): URL of the image.
+    - **kwargs: Additional keyword arguments for cv.imdecode (e.g., flags=cv.IMREAD_GRAYSCALE).
+    
     Returns:
-    - dict: Dictionary containing image metadata and statistics.
+    - image: Loaded image as a NumPy array.
     """
     
     ### START CODE HERE ###
-    ### TODO
+    with urllib.request.urlopen(url) as response:
+        image_array = np.asarray(bytearray(response.read()), dtype=np.uint8)
+
+        flags = kwargs.get("flags", cv.IMREAD_COLOR)
+        image = cv.imdecode(image_array, flags)
     ### END CODE HERE ###
+    
+    return image
 
-    return {
-        "width": width,
-        "height": height,
-        "dtype": dtype,
-        "depth": depth,
-        "min_value": min_val,
-        "max_value": max_val,
-        "mean": mean_val,
-        "std_dev": std_val
-    }
+image = load_image_from_url(url, flags=cv.IMREAD_COLOR)
 
-# Example Usage:
-sample_image = np.random.randint(0, 256, (100, 100), dtype=np.uint8)
-info = get_image_info(sample_image)
-
-# Print results
-for key, value in info.items():
-    print(f"{key}: {value}")
+cv.imshow("Image from URL", image)
+cv.waitKey(0)
+cv.destroyAllWindows()
